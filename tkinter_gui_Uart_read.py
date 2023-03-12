@@ -275,7 +275,7 @@ def readSerial():
         if len(data) > 0:
             # print('!!!')
             try:
-                print(f'DATA: {data}, Len: {len(data)}')
+                # print(f'DATA: {data}, Len: {len(data)}')
                 sensor = float(data.decode('utf8'))
 
                 data_sensor = float(data.decode('utf8'))
@@ -295,7 +295,7 @@ def readSerial():
                     else:
                         xData.append(time.perf_counter()-refTime)
 
-                    print(yData)
+                    # print(yData)
 
                     lenYdata = len(yData)
                     lenXdata = len(xData)
