@@ -105,7 +105,7 @@ def update_chart():
     ax.grid(color='b', linestyle='-', linewidth=0.2)
     fig.canvas.draw()
     if serialData:
-        root.after(250, update_chart)
+        root.after(150, update_chart)
 
 
 def connect_menu_init():
@@ -147,17 +147,18 @@ def connect_menu_init():
     graph.canvas.grid_remove()
 
     # Dynamic update
+    col = "#11ff68"
     graph.outer = graph.canvas.create_arc(
-        10, 10, 290, 290, start=90, extent=100, outline="#f11", fill="#f11", width=2)
+        10, 10, 290, 290, start=90, extent=100, outline=col, fill=col, width=2)
     # Static
     graph.canvas.create_oval(
-        75, 75, 225, 225, outline="#f11", fill="white", width=2)
+        75, 75, 225, 225, outline=col, fill="white", width=2)
     # Dynamic update
     graph.text = graph.canvas.create_text(
         150, 150, anchor=E, font=("Helvetica", "20"), text="---")
     # Static
     graph.canvas.create_text(
-        175, 150, anchor=CENTER, font=("Helvetica", "20"), text="mV")
+        170, 150, anchor=CENTER, font=("Helvetica", "20"), text="V")
 
     # Part for the toggle Pin + adding it to global variable
     toggle_Pin_btn = Button(root, text="Pin High", height=2,
@@ -247,9 +248,9 @@ def graph_control(graph):
     # Function (Thread 3) to Manage the GUI animation
     #################################################
     graph.canvas.itemconfig(
-        graph.outer, exten=int(359*graph.sensor/1000))
+        graph.outer, exten=int(359*graph.sensor/10))
     graph.canvas.itemconfig(
-        graph.text, text=f"{int(3.3*graph.sensor)}")
+        graph.text, text=f"{float(graph.sensor)}")
 
 
 def readSerial():
@@ -270,26 +271,32 @@ def readSerial():
 
     while serialData:
         data = ser.readline()
-        # print(f'DATA: {data}, Len: {len(data)}')
+
         if len(data) > 0:
             # print('!!!')
             try:
-                sensor = int(data.decode('utf8'))
-                print(f'Sensor: {sensor}')
-                data_sensor = int(data.decode('utf8'))
+                print(f'DATA: {data}, Len: {len(data)}')
+                sensor = float(data.decode('utf8'))
+
+                data_sensor = float(data.decode('utf8'))
                 average += data_sensor
                 sample += 1
                 if sample == sampling:
                     sensor = int(average/sampling)
+
                     average = 0
                     sample = 0
                     #############################################
                     # 8: Start recording the data into X and Y lists
-                    yData.append((sensor*5)/1024)
+                    # yData.append((sensor*5)/1024)
+                    yData.append(data_sensor)
                     if len(xData) == 0:
                         xData.append(0)
                     else:
                         xData.append(time.perf_counter()-refTime)
+
+                    print(yData)
+
                     lenYdata = len(yData)
                     lenXdata = len(xData)
                     printRange = 0
@@ -305,8 +312,9 @@ def readSerial():
                         y = yData[lenYdata-printRange:lenYdata]
                         x = xData[lenYdata-printRange:lenYdata]
                     #############################################
-
-                    graph.sensor = sensor
+                    # print(f'Sensor: {sensor}')
+                    graph.sensor = data_sensor
+                    # print(graph.sensor)
                     t2 = threading.Thread(target=graph_control, args=(graph,))
                     t2.deamon = True
                     t2.start()

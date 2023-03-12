@@ -41,9 +41,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.line = ser.readline()
             self.data = self.line.strip()
             self.data = str(self.data.decode()).split(':')
-            # print(self.data)
-            if len(self.data) == 4:
-                return int(self.data[3])
+            print(self.data)
+            if len(self.data) != 0:
+                return float(self.data[0])
             else:
                 return 0
 def main():
