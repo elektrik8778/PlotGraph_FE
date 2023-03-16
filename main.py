@@ -20,6 +20,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.setBackground('w')
 
         pen = pg.mkPen(color=(255, 0, 0))
+
         self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen)
 
         self.timer = QtCore.QTimer()

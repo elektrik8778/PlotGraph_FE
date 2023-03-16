@@ -5,6 +5,7 @@
 #include <SoftwareSerial.h>
 Adafruit_ADS1115 ads;
 
+
 // Set this value to 9, 8, 7, 6 or 5 to adjust the resolution
 #define DAC_RESOLUTION    (9) //DAC resolution 12BIT: 0 to 4056
 
