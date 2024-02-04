@@ -38,7 +38,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.data_line.setData(self.x, self.y)  # Update the data.
 
     def get_data(self):
-        with serial.Serial('COM4', 57600, timeout=1) as ser:
+        with serial.Serial('COM9', 9600, timeout=1) as ser:
             self.line = ser.readline()
             self.data = self.line.strip()
             self.data = str(self.data.decode()).split(':')
